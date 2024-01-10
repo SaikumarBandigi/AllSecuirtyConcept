@@ -1,7 +1,6 @@
 package com.AllSecuirtyConcept.advdbsec.service.impl;
 
-
-import com.AllSecuirtyConcept.advdbsec.Dao.UserInfoDAO;
+import com.AllSecuirtyConcept.advdbsec.dao.UserDetailsDao;
 import com.AllSecuirtyConcept.advdbsec.entities.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,18 +16,21 @@ import java.util.Arrays;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-	
-	@Autowired
-	private UserInfoDAO userInfoDAO;
 
-	@Override
-	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-		UserInfo userInfo = userInfoDAO.getActiveUser(userName);
-		GrantedAuthority authority = new SimpleGrantedAuthority(userInfo.getRole());
-		
-		User user = new User(userInfo.getUserName(), userInfo.getPassword(),Arrays.asList(authority));
-		
-		UserDetails userDetails = (UserDetails)user;
-		return userDetails;
-	}
+    @Autowired
+    private UserDetailsDao userDetailsDao;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        UserInfo userDetailsobj = userDetailsDao.getActiveUser(username);
+        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(userDetailsobj.getRole());
+
+        User user = new User(userDetailsobj.getName(), userDetailsobj.getPassword(), Arrays.asList(grantedAuthority));
+
+        UserDetails userDetails =(UserDetails) user;
+        return userDetails;
+    }
+
+
 }
